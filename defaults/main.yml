@@ -1,0 +1,4 @@
+---
+gephi_version: "0.9.1"
+gephi_url: "https://github.com/gephi/gephi/releases/download/v{{gephi_version}}/gephi-{{gephi_version}}-linux.tar.gz"
+gephi_download_dir: "/tmp"
