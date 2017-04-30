@@ -1,0 +1,41 @@
+---
+- name: check for short-circuit
+  raw: "[ -f /opt/gephi ]"
+  register: installed
+  ignore_errors: True
+  changed_when: False
+
+- name: set should_run fact
+  set_fact:
+    should_run: "{{installed|failed or not zsh_should_shortcircuit}}"
+
+- include: compat.yml
+
+- include: include_vars.yml
+
+- include: Debian.yml
+  when: ansible_os_family == 'Debian'
+
+- include: RedHat.yml
+  when: ansible_os_family == 'RedHat'
+
+- include: install_package_names.yml
+
+- name: Download Gephi
+  command: >
+    wget -q -O {{gephi_download_dir}}/gephi.tar.gz {{gephi_url}}
+  args:
+    creates: "{{gephi_download_dir}}/gephi.tar.gz"
+
+- name: Make unpack directory
+  sudo: True
+  file:
+    path: /opt/gephi
+    state: directory
+
+- name: Untar Gephi
+  command: tar xvfoz "{{gephi_download_dir}}/gephi.tar.gz" --strip-components 1
+  sudo: True
+  args:
+    chdir: /opt/gephi
+    creates: /opt/gephi/platform
