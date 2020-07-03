@@ -1,0 +1,18 @@
+- name: Download Gephi
+  command: >
+    wget -q -O {{gephi_download_dir}}/gephi.tar.gz {{gephi_url}}
+  args:
+    creates: "{{gephi_download_dir}}/gephi.tar.gz"
+
+- name: Make unpack directory
+  sudo: True
+  file:
+    path: /opt/gephi
+    state: directory
+
+- name: Untar Gephi
+  command: tar xvfoz "{{gephi_download_dir}}/gephi.tar.gz" --strip-components 1
+  sudo: True
+  args:
+    chdir: /opt/gephi
+    creates: /opt/gephi/platform
